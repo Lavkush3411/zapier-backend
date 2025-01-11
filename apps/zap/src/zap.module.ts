@@ -1,10 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ZapController } from './zap.controller';
-import { ZapService } from './zap.service';
+import { WebhooksModule } from './webhooks/webhooks.module';
+import { PrismaModule } from '@app/prisma';
 
 @Module({
-  imports: [],
-  controllers: [ZapController],
-  providers: [ZapService],
+  imports: [WebhooksModule, PrismaModule],
 })
 export class ZapModule {}

@@ -36,6 +36,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/prisma/tsconfig.lib.json"
       }
+    },
+    "queue": {
+      "type": "application",
+      "root": "apps/queue",
+      "entryFile": "main",
+      "sourceRoot": "apps/queue/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/queue/tsconfig.app.json"
+      }
     }
   }
 }
