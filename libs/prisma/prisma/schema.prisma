@@ -16,4 +16,61 @@ datasource db {
 model User{
   sub String @id  @default(uuid())
   name String
+  email String
+  password String
+}
+
+model Zap{
+  id String @id @default(uuid())
+  name String
+  triggerId String
+  zapRunId String
+  zapRunOutBox String
+  trigger Trigger?
+  actions Action[]
+  zapRun ZapRun[] 
+  zapRunOutbox ZapRunOutBox[]
+}
+
+model Trigger{
+  id                  String @id @default(uuid())
+  zapId               String @unique
+  availableTriggerId  String @unique
+  type                AvailableTriggers @relation(fields: [availableTriggerId], references: [id])
+  zap                 Zap @relation(fields: [zapId], references: [id])
+}
+
+model AvailableTriggers{
+  id              String @id @default(uuid())
+  name            String
+  triggers        Trigger[] 
+}
+
+model Action{
+  id String @id @default(uuid())
+  actionId String @unique
+  zapId String
+  type AvailableActions @relation(fields: [actionId], references: [id])
+  zap Zap @relation(fields: [zapId],references: [id])
+
+}
+
+model AvailableActions{
+  id String @id @default(uuid())
+  name String
+  actions Action[]
+}
+
+model ZapRun{
+  id String @id @default(uuid())
+  zapId String @unique 
+  metaData Json
+  zap Zap @relation(fields: [zapId], references: [id]) 
+}
+
+model ZapRunOutBox{
+  id String @id @default(uuid())
+  zapId String @unique
+  metaData Json
+  zap Zap @relation(fields: [zapId], references: [id])
 }
