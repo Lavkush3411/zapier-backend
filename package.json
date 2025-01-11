@@ -77,7 +77,8 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@app/prisma(|/.*)$": "<rootDir>/libs/prisma/src/$1"
+      "^@app/prisma(|/.*)$": "<rootDir>/libs/prisma/src/$1",
+      "^@app/kafka(|/.*)$": "<rootDir>/libs/kafka/src/$1"
     }
   }
 }

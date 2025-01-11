@@ -1,5 +1,6 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { Kafka, Producer } from 'kafkajs';
+import { KAFKA_BROKER } from 'libs/constansts/kafka.constants';
 
 @Injectable()
 export class KafkaService implements OnModuleInit, OnModuleDestroy {
@@ -7,13 +8,12 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
   producer: Producer;
   async onModuleInit() {
     this.kafka = new Kafka({
-      clientId: 'kafka',
-      brokers: ['localhost:9092'],
+      brokers: KAFKA_BROKER,
     });
 
     this.producer = this.kafka.producer();
 
-    await this.producer.connect();
+    await Promise.all([this.producer.connect()]);
   }
 
   async onModuleDestroy() {

@@ -19,13 +19,13 @@
         "tsConfigPath": "apps/primary/tsconfig.app.json"
       }
     },
-    "zap": {
+    "processor": {
       "type": "application",
-      "root": "apps/zap",
+      "root": "apps/processor",
       "entryFile": "main",
-      "sourceRoot": "apps/zap/src",
+      "sourceRoot": "apps/processor/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/zap/tsconfig.app.json"
+        "tsConfigPath": "apps/processor/tsconfig.app.json"
       }
     },
     "prisma": {
@@ -44,6 +44,15 @@
       "sourceRoot": "apps/queue/src",
       "compilerOptions": {
         "tsConfigPath": "apps/queue/tsconfig.app.json"
+      }
+    },
+    "kafka": {
+      "type": "library",
+      "root": "libs/kafka",
+      "entryFile": "index",
+      "sourceRoot": "libs/kafka/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/kafka/tsconfig.lib.json"
       }
     }
   }

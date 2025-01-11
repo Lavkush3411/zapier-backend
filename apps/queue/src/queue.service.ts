@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { KafkaService } from './kafka/services/kafka.service';
+import { KafkaService } from '../../../libs/kafka/src/services/kafka.service';
 import { PrismaService } from '@app/prisma';
 
 @Injectable()
