@@ -1,9 +1,9 @@
-import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Consumer, Kafka } from 'kafkajs';
 import { KAFKA_BROKER } from 'libs/constansts/kafka.constants';
 
 @Injectable()
-export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
+export class KafkaConsumerService implements OnModuleInit {
   consumer: Consumer;
   private kafka: Kafka;
 
@@ -15,7 +15,7 @@ export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
     await this.consumer.connect();
   }
 
-  async subScribeToTopic(onMessage: (message: any) => void) {
+  async subScribeToTopic(onMessage: (message: any) => Promise<void>) {
     await this.consumer.subscribe({
       topic: 'first_topic',
       fromBeginning: true,
@@ -23,13 +23,19 @@ export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
 
     await this.consumer.run({
       eachMessage: async ({ message, topic, partition }) => {
-        const value = message.value?.toString();
-        onMessage({ topic, partition, value });
+        await onMessage({ topic, partition, message });
       },
+      autoCommit: false,
     });
   }
 
-  async onModuleDestroy() {
-    await this.consumer.disconnect();
+  async commitMessage(offset: string) {
+    await this.consumer.commitOffsets([
+      { topic: 'first_topic', offset, partition: 0 },
+    ]);
   }
+
+  // async onModuleDestroy() {
+  //   await this.consumer.disconnect();
+  // }
 }

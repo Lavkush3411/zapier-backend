@@ -5,8 +5,15 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 export class ProcessorService implements OnModuleInit {
   constructor(private readonly consumer: KafkaConsumerService) {}
   onModuleInit() {
-    this.consumer.subScribeToTopic(({ value, topic }) => {
-      console.log('message', value, topic);
+    this.consumer.subScribeToTopic(async ({ message, topic, partition }) => {
+      await this.consumer.commitMessage(String(parseInt(message.offset) + 1));
+      console.log(
+        'message',
+        message.offset,
+        message.value.toString(),
+        topic,
+        partition,
+      );
     });
   }
 }
