@@ -21,38 +21,42 @@ model User {
 }
 
 model Zap {
-  id           String         @id @default(uuid())
-  name         String
-  trigger      Trigger?
-  actions      Action[]
-  zapRun       ZapRun[]
-  zapRunOutbox ZapRunOutBox[]
+  id               String         @id @default(uuid())
+  name             String
+  triggerTypeId    String
+  triggerSubTypeId String
+  triggerType      TriggerType    @relation(fields: [triggerTypeId], references: [id])
+  triggerSubType   TriggerSubType @relation(fields: [triggerSubTypeId], references: [id])
+  actions          Action[]
+  zapRuns           ZapRun[]
+  zapRunOutboxes     ZapRunOutBox[]
 }
 
-model Trigger {
-  id                 String            @id @default(uuid())
-  zapId              String            @unique
-  availableTriggerId String            @unique
-  type               AvailableTriggers @relation(fields: [availableTriggerId], references: [id])
-  zap                Zap               @relation(fields: [zapId], references: [id])
+model TriggerType {
+  id             String           @id @default(uuid())
+  name           String
+  triggerSubType TriggerSubType[]
+  zaps            Zap[]
 }
 
-model AvailableTriggers {
-  id       String    @id @default(uuid())
-  name     String
-  triggers Trigger[]
+model TriggerSubType {
+  id            String      @id @default(uuid())
+  name          String
+  triggerTypeId String
+  zaps          Zap[]
+  triggerType   TriggerType @relation(fields: [triggerTypeId], references: [id])
 }
 
 model Action {
-  id           String           @id @default(uuid())
-  actionId     String           @unique
-  zapId        String
-  sortingOrder Int              @default(0)
-  type         AvailableActions @relation(fields: [actionId], references: [id])
-  zap          Zap              @relation(fields: [zapId], references: [id])
+  id                String           @id @default(uuid())
+  availableActionId String
+  zapId             String
+  sortingOrder      Int              @default(0)
+  type              AvailableAction @relation(fields: [availableActionId], references: [id])
+  zap               Zap              @relation(fields: [zapId], references: [id])
 }
 
-model AvailableActions {
+model AvailableAction {
   id      String   @id @default(uuid())
   name    String
   actions Action[]

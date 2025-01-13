@@ -1,5 +1,5 @@
 import { Controller, Param, Post } from '@nestjs/common';
-import { ZapCreateParamDto } from './dtos/zap-create.dto';
+import { ZapCreateParamDto } from '../zap/dtos/zap-create.dto';
 import { WebhooksService } from './services/webhooks.service';
 
 @Controller('webhooks')
