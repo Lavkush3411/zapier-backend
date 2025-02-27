@@ -23,20 +23,22 @@ model User {
 model Zap {
   id               String         @id @default(uuid())
   name             String
+  triggerCondition Json? // this will be the actual check if actions should be executed or not.
+  // trigger condition will be derived from trigger type and subtype
   triggerTypeId    String
   triggerSubTypeId String
   triggerType      TriggerType    @relation(fields: [triggerTypeId], references: [id])
   triggerSubType   TriggerSubType @relation(fields: [triggerSubTypeId], references: [id])
   actions          Action[]
-  zapRuns           ZapRun[]
-  zapRunOutboxes     ZapRunOutBox[]
+  zapRuns          ZapRun[]
+  zapRunOutboxes   ZapRunOutBox[]
 }
 
 model TriggerType {
   id             String           @id @default(uuid())
   name           String
   triggerSubType TriggerSubType[]
-  zaps            Zap[]
+  zaps           Zap[]
 }
 
 model TriggerSubType {
@@ -47,31 +49,40 @@ model TriggerSubType {
   triggerType   TriggerType @relation(fields: [triggerTypeId], references: [id])
 }
 
+// this action will be performed on zap hit
+// each zap can have number of actions
+// when zap hits extract all the actions and type from available actions  by sortingorder
+// put them to zap outbox
+// process them based on available actions and their order
 model Action {
-  id                String           @id @default(uuid())
+  id                String          @id @default(uuid())
+  actionData        Json? // data that will be filled by user from required data field of available action
   availableActionId String
   zapId             String
-  sortingOrder      Int              @default(0)
+  sortingOrder      Int             @default(0)
   type              AvailableAction @relation(fields: [availableActionId], references: [id])
-  zap               Zap              @relation(fields: [zapId], references: [id])
+  zap               Zap             @relation(fields: [zapId], references: [id], onDelete: Cascade)
 }
 
+// we directly have available actions 
+// ex: send Gmail, send Outlook mail not like action and their subtypes
 model AvailableAction {
-  id      String   @id @default(uuid())
-  name    String
-  actions Action[]
+  id           String   @id @default(uuid())
+  name         String
+  requiredData Json? // array of objects this fileds will be popultated to the user to fill
+  actions      Action[]
 }
 
 model ZapRun {
   id       String @id @default(uuid())
   zapId    String
   metaData Json
-  zap      Zap    @relation(fields: [zapId], references: [id])
+  zap      Zap    @relation(fields: [zapId], references: [id], onDelete: Cascade)
 }
 
 model ZapRunOutBox {
   id       String @id @default(uuid())
   zapId    String
   metaData Json
-  zap      Zap    @relation(fields: [zapId], references: [id])
+  zap      Zap    @relation(fields: [zapId], references: [id], onDelete: Cascade)
 }
